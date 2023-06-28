@@ -1,7 +1,19 @@
+using Data.Context;
+using Microsoft.EntityFrameworkCore;
+
 var builder = WebApplication.CreateBuilder(args);
 
 // Add services to the container.
 builder.Services.AddControllersWithViews();
+
+#region DBCONTEXT
+builder.Services.AddDbContext<SocialDbContext>(options =>
+{
+    options.UseSqlServer
+    (builder.Configuration.GetConnectionString("SocialAppConnectionString"));
+});
+#endregion
+
 
 var app = builder.Build();
 
