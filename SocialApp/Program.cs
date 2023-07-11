@@ -1,4 +1,5 @@
 using Data.Context;
+using IOC.DependencyContainer;
 using Microsoft.EntityFrameworkCore;
 
 var builder = WebApplication.CreateBuilder(args);
@@ -13,6 +14,18 @@ builder.Services.AddDbContext<SocialDbContext>(options =>
     (builder.Configuration.GetConnectionString("SocialAppConnectionString"));
 });
 #endregion
+
+builder.Services.AddCors(opt =>
+{
+    opt.AddPolicy("mypolicy", policy =>
+    {
+        policy.AllowAnyMethod()
+        .AllowAnyHeader()
+        .WithOrigins("http://localhost:3000");
+    });
+});
+
+builder.Services.RegisterServices();  
 
 
 var app = builder.Build();
@@ -31,6 +44,7 @@ app.UseStaticFiles();
 app.UseRouting();
 
 app.UseAuthorization();
+app.UseCors("mypolicy");
 
 app.MapControllerRoute(
     name: "default",
